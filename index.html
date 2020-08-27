@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+  <title>Challenge Impôt</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" defer>
+</head>
+<body>
+  <div class="container">
+    <h1 class="m-4">Calculer le montant de son imposition en 2020</h1>
+    <div class="form-group">
+      <label for="income">Revenus</label>
+      <input type="number" class="form-control" id="income">
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" id="married">
+          <label class="form-check-label" for="married">Marié</label>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <label for="children">Nombre d'enfants</label>
+        <input type="number" class="form-control" id="children">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <div class="form-group">
+          <label for="tax">Impôt 2020</label>
+          <input type="number" class="form-control" id="tax-2020" disabled>
+        </div>
+        <div class="form-group">
+          <label for="after-tax">Après impôt 2020</label>
+          <input type="number" class="form-control" id="after-tax-2020">
+        </div>
+        <div class="form-group">
+          <span id="difference-2020-2019"></span>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Montant des revenus 2020</th>
+              <th scope="col">% d'imposition 2020</th>
+              <th scope="col">Montant de vos impositions 2020</th>
+            </tr>
+          </thead>
+          <tbody style="color: white;">
+            <tr style="background-color: rgb(59, 6, 93);">
+              <th scope="row"> > 157806 €</th>
+              <td  class="primary">45 %</td>
+              <td id="2020-step-4"></td>
+            </tr>
+            <tr style="background-color: rgb(105, 54, 107);">
+              <th scope="row">157806 €</th>
+              <td>41 %</td>
+              <td id="2020-step-3"></td>
+            </tr>
+            <tr style="background-color: rgb(210, 83, 214);">
+              <th scope="row">73369 €</th>
+              <td>30 %</td>
+              <td id="2020-step-2"></td>
+            </tr>
+            <tr style="background-color: rgb(217, 118, 221);">
+              <th scope="row">25659 €</th>
+              <td>11 %</td>
+              <td id="2020-step-1"></td>
+            </tr>
+            <tr style="background-color: rgb(221, 173, 223);">
+              <th scope="row">10064 €</th>
+              <td> 0 %</td>
+              <td id="2020-step-0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <div class="form-group">
+          <label for="tax">Impôt 2019</label>
+          <input type="number" class="form-control" id="tax-2019" disabled>
+        </div>
+        <div class="form-group">
+          <label for="after-tax">Après impôt 2019</label>
+          <input type="number" class="form-control" id="after-tax-2019" disabled>
+        </div>
+      </div>
+      <div class="form-group col-md-6">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Montant des revenus 2019</th>
+              <th scope="col">% d'imposition 2019</th>
+              <th scope="col">Montant de vos impositions 2019</th>
+            </tr>
+          </thead>
+          <tbody style="color: white;">
+            <tr style="background-color: rgb(59, 6, 93);">
+              <th scope="row"> > 157806 €</th>
+              <td  class="primary">45 %</td>
+              <td id="2019-step-4"></td>
+            </tr>
+            <tr style="background-color: rgb(105, 54, 107);">
+              <th scope="row">157806 €</th>
+              <td>41 %</td>
+              <td id="2019-step-3"></td>
+            </tr>
+            <tr style="background-color: rgb(210, 83, 214);">
+              <th scope="row">74517 €</th>
+              <td>30 %</td>
+              <td id="2019-step-2"></td>
+            </tr>
+            <tr style="background-color: rgb(217, 118, 221);">
+              <th scope="row">27794 €</th>
+              <td>14 %</td>
+              <td id="2019-step-1"></td>
+            </tr>
+            <tr style="background-color: rgb(221, 173, 223);">
+              <th scope="row">10064 €</th>
+              <td> 0 %</td>
+              <td id="2019-step-0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script>
+    const CONSTANTS = {
+      STEPS_2020: [0, 10064, 25659, 73369, 157806],
+      PERCENTS_2020: [0, 11, 30, 41, 45],
+      STEPS_2019: [0, 10064, 27794, 74517, 157806],
+      PERCENTS_2019: [0, 14, 30, 41, 45]
+    }
+
+    const parseInput = value => {
+      const parsed = parseInt(value, 10)
+      if (isNaN(parsed)) {
+        return 0
+      }
+      return Math.max(0, Math.trunc(parsed))
+    }
+
+    const errorsHandling = () => {
+      $('#income').val(parseInput($('#income').val()))
+      $('#children').val(parseInput($('#children').val()))
+      $('#after-tax-2020').val(parseInput($('#after-tax-2020').val()))
+    }
+
+    const calculateParts = () => {
+      return 1 + ($('#married').is(':checked') ? 1 : 0) + ($('#children').val() / 2)
+    }
+
+    const getTaxValueByStep = (step, value, steps) => {
+      const interStep = steps[step + 1] - steps[step] 
+      const valueStep = (value - steps[step] - 1) < 0 ? 0 : (value - steps[step] - 1)
+      return step === 4 || valueStep < interStep ? valueStep : interStep
+    }
+
+    const getPercentTaxByStep = (step, value, steps, percents) => {
+      return getTaxValueByStep(step, value, steps) * percents[step] / 100
+    }
+
+    const getTaxByStep = (step, income, parts, steps, percents) => {
+      return Math.round(getPercentTaxByStep(step, (income / parts), steps, percents) * parts)
+    }
+
+    const calculateTaxByYear = (year, income, parts, changeTextAfterTax = true, changeTextIncome = false) => {
+      let taxValue = 0
+      for (let i = 0; i < 5; i++){
+        const taxStep = getTaxByStep(i, income, parts, CONSTANTS[`STEPS_${year}`], CONSTANTS[`PERCENTS_${year}`])
+        $(`#${year}-step-${i}`).text(taxStep)
+        taxValue += taxStep
+      }
+      const afterTaxValue = income - taxValue
+
+      if (changeTextAfterTax) {
+        $(`#after-tax-${year}`).val(afterTaxValue)
+      }
+      if (changeTextIncome) {
+        $('#income').val(income)
+      }
+      $(`#tax-${year}`).val(taxValue)
+
+      return taxValue
+    }
+
+    const showDifferenceText = (tax2019, tax2020) => {
+      const differenceYear = tax2019 - tax2020
+      $('#difference-2020-2019').text(`soit ${differenceYear > 0 ? 'un gain' : 'une perte'} de ${differenceYear} € par rapport à l’imposition de ses revenus 2019`)
+    }
+
+    const handleChangeIncome = () => {
+      errorsHandling()
+      const income = parseInt($('#income').val(), 10)
+      const parts = calculateParts()
+      const tax2020 = calculateTaxByYear('2020', income, parts)
+      const tax2019 = calculateTaxByYear('2019', income, parts)
+      showDifferenceText(tax2019, tax2020)
+     }
+
+    const handlerDichotomie = (income, parts, steps, percents) => {
+      let taxValue = 0
+      for (let i = 0; i < 5; i++) {
+        taxValue += getTaxByStep(i, income, parts, steps, percents)
+      }
+
+      return income - taxValue
+    }
+
+    const dichotomie = (value, parts, steps, percents) => {
+      let min = 0
+      let max = value * 2
+      let mid = 0
+      while ((max - min) > 1) {
+        mid = Math.floor((min + max) / 2)
+        if (handlerDichotomie(mid, parts, steps, percents) >= value) {
+          max = mid
+        } else {
+          min = mid
+        }
+      }
+
+      return mid
+    }
+
+    const handleChangeAfterTax = () => {
+      errorsHandling()
+      const afterTax = parseInt($('#after-tax-2020').val(), 10)
+      const parts = calculateParts()
+      const income = dichotomie(afterTax, parts, CONSTANTS.STEPS_2020, CONSTANTS.PERCENTS_2020)
+      const tax2020 = calculateTaxByYear('2020', income, parts, false, true)
+      const tax2019 = calculateTaxByYear('2019', income, parts)
+      showDifferenceText(tax2019, tax2020)
+    }
+
+    $(document).ready(() => {
+      $('#income').keyup(handleChangeIncome)
+      $('#income').change(handleChangeIncome)
+      $('#married').change(handleChangeIncome)
+      $('#children').keyup(handleChangeIncome)
+      $('#children').change(handleChangeIncome)
+      $('#after-tax-2020').keyup(handleChangeAfterTax)
+      $('#after-tax-2020').change(handleChangeAfterTax)
+    })
+  </script>
+</body>
+</html>
